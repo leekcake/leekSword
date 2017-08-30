@@ -5,6 +5,10 @@ import java.util.*
 
 
 open class Logger(val level: Level = Level.INFO, dateFormat: String = "yyyy-MM-dd HH:mm:ss.SSS") {
+    companion object {
+        internal val logger = Logger(Level.DEBUG)
+    }
+
     val dateFormat = SimpleDateFormat(dateFormat)
 
     enum class Level(val level: Int) {

@@ -50,7 +50,7 @@ open class Logger(val level: Level = Level.INFO, dateFormat: String = "yyyy-MM-d
         print(Level.DEBUG, message, tag);
     }
 
-    private fun print(level: Level, message: String, tag: String = "") {
+    fun print(level: Level, message: String, tag: String = "") {
         if(level > this.level) {
             return
         }

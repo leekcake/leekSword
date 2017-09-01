@@ -81,16 +81,16 @@ class SDS {
     }
 
     fun dump(level: Logger.Level) {
-        logger.print(level, "CMLS", toString());
+        logger.print(level, toString());
     }
 
     fun dumpDetail(level: Logger.Level) {
-        logger.print(level, "CMLS", "Name: $name");
+        logger.print(level, "Name: $name");
         for((key, value) in arguments) {
             if(value != null) {
-                logger.print(level, "CMLS", "argument '$key' = '$value'");
+                logger.print(level, "argument '$key' = '$value'");
             } else {
-                logger.print(level, "CMLS", "argument '$key' = nothing");
+                logger.print(level, "argument '$key' = nothing");
             }
         }
     }

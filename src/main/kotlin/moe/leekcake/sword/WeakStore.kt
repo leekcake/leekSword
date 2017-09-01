@@ -29,6 +29,10 @@ class WeakStore<Data> {
         datas.add(0, WeakReference(data) );
     }
 
+    fun isEmpty(): Boolean {
+        return datas.isEmpty();
+    }
+
     fun remove(data: Data) {
         removeFor(data);
     }

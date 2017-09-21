@@ -94,6 +94,7 @@ object SaveHelper {
                 dos.write( data );
             }
             is Array<*> -> {
+                dos.writeByte( AutoType.Array.type.toInt() )
                 writeArray(dos, data as Array<Any?>);
             }
             is SDS -> {

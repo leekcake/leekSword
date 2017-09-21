@@ -110,7 +110,9 @@ class SDS {
         val argument: Any? = arguments[name];
 
         if(argument is Array<*>) {
-            return argument as Array<String>;
+            return Array(argument.size) {
+                i -> argument[i] as String
+            };
         }
 
         return null;

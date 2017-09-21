@@ -101,6 +101,9 @@ object SaveHelper {
                 dos.writeByte(AutoType.SDS.type.toInt());
                 data.save(dos);
             }
+            else -> {
+                throw Exception("Non-saveable data on SDS")
+            }
         }
     }
 

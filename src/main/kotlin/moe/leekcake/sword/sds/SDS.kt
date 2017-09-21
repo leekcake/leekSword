@@ -29,19 +29,19 @@ class SDS {
     constructor(data: ByteArray) : this( ByteArrayInputStream(data) )
 
     constructor(input: InputStream) {
-        val ois = ObjectInputStream(input)
+        val dis = DataInputStream(input)
 
-        name = SaveHelper.readString(ois);
+        name = SaveHelper.readString(dis);
 
-        val count: Int = ois.readInt();
+        val count: Int = dis.readInt();
         for(inx in 0 until count) {
-            val nameOnly: Boolean = ois.readBoolean();
-            val name: String = SaveHelper.readString(ois);
+            val nameOnly: Boolean = dis.readBoolean();
+            val name: String = SaveHelper.readString(dis);
 
             if(nameOnly) {
                 putArgument(name, null);
             } else {
-                putArgument(name, SaveHelper.readAuto(ois));
+                putArgument(name, SaveHelper.readAuto(dis));
             }
         }
     }
@@ -53,17 +53,17 @@ class SDS {
     }
 
     fun save(output: OutputStream) {
-        val oos = ObjectOutputStream(output);
+        val dos = DataOutputStream(output);
 
-        SaveHelper.writeString(oos, name);
+        SaveHelper.writeString(dos, name);
 
-        oos.writeInt( arguments.size );
+        dos.writeInt( arguments.size );
 
         for((key, value) in arguments) {
-            oos.writeBoolean( value === null );
-            SaveHelper.writeString(oos, key);
+            dos.writeBoolean( value === null );
+            SaveHelper.writeString(dos, key);
             if(value !== null) {
-                SaveHelper.writeAuto(oos, value);
+                SaveHelper.writeAuto(dos, value);
             }
         }
 

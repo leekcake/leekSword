@@ -1,13 +1,12 @@
 package moe.leekcake.sword.sds
 
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
+import java.io.DataInputStream
+import java.io.DataOutputStream
 
 object SaveHelper {
     enum class AutoType(val type: Byte) {
         Number(-128),
         String(-127),
-        KotlinObject(-126),
         RawByte(-125),
         SDS(-124),
         Array(-123),
@@ -43,8 +42,8 @@ object SaveHelper {
         }
     }
 
-    fun readAuto(ois: ObjectInputStream): Any? {
-        val type: AutoType? = AutoType.from( ois.readByte() );
+    fun readAuto(dis: DataInputStream): Any? {
+        val type: AutoType? = AutoType.from( dis.readByte() );
         if(type === null) {
             throw Exception("Bad type")
         }
@@ -54,148 +53,141 @@ object SaveHelper {
                 return null;
             }
             AutoType.SDS -> {
-                return SDS(ois);
+                return SDS(dis);
             }
             AutoType.RawByte -> {
-                val len = ois.readInt()
+                val len = dis.readInt()
                 val data = ByteArray(len)
-                ois.read(data)
+                dis.read(data)
                 return data
             }
             AutoType.String -> {
-                return readString(ois);
+                return readString(dis);
             }
             AutoType.Number -> {
-                return readNumber(ois);
+                return readNumber(dis);
             }
             AutoType.Array -> {
-                return readArray(ois);
-            }
-            AutoType.KotlinObject -> {
-                return ois.readObject();
+                return readArray(dis);
             }
         }
     }
 
-    fun writeAuto(oos: ObjectOutputStream, data: Any?) {
+    fun writeAuto(dos: DataOutputStream, data: Any?) {
         if(data === null) {
-            oos.writeByte( AutoType.Nothing.type.toInt() );
+            dos.writeByte( AutoType.Nothing.type.toInt() );
             return;
         }
 
         when (data) {
             is Number -> {
-                oos.writeByte( AutoType.Number.type.toInt() );
-                writeNumber(oos, data);
+                dos.writeByte( AutoType.Number.type.toInt() );
+                writeNumber(dos, data);
             }
             is String -> {
-                oos.writeByte( AutoType.String.type.toInt() );
-                writeString(oos, data);
+                dos.writeByte( AutoType.String.type.toInt() );
+                writeString(dos, data);
             }
             is ByteArray -> {
-                oos.writeByte( AutoType.RawByte.type.toInt() );
-                oos.writeInt( data.size );
-                oos.write( data );
+                dos.writeByte( AutoType.RawByte.type.toInt() );
+                dos.writeInt( data.size );
+                dos.write( data );
             }
             is Array<*> -> {
-                writeArray(oos, data as Array<Any?>);
+                writeArray(dos, data as Array<Any?>);
             }
             is SDS -> {
-                oos.writeByte(AutoType.SDS.type.toInt());
-                data.save(oos);
-            }
-            else -> {
-                oos.writeByte( AutoType.KotlinObject.type.toInt() );
-                oos.writeObject(data);
+                dos.writeByte(AutoType.SDS.type.toInt());
+                data.save(dos);
             }
         }
     }
 
-    fun readArray(ois: ObjectInputStream): Array<Any?> {
+    fun readArray(dis: DataInputStream): Array<Any?> {
         val result: Array<Any?>;
 
-        result = Array( ois.readInt(), {null} );
+        result = Array( dis.readInt(), {null} );
         for(inx: Int in 0 until result.size) {
-            result[inx] = readAuto(ois);
+            result[inx] = readAuto(dis);
         }
 
         return result;
     }
 
-    fun writeArray(oos: ObjectOutputStream, data: Array<Any?>) {
-        oos.writeInt( data.size );
+    fun writeArray(dos: DataOutputStream, data: Array<Any?>) {
+        dos.writeInt( data.size );
         for(dat: Any? in data) {
-            writeAuto(oos, dat);
+            writeAuto(dos, dat);
         }
     }
 
-    fun readNumber(ois: ObjectInputStream): Number {
-        val code: NumberType? = NumberType.from( ois.readByte() );
+    fun readNumber(dis: DataInputStream): Number {
+        val code: NumberType? = NumberType.from( dis.readByte() );
         if(code === null) {
             throw Exception("Non-Numberic Data");
         }
 
         when(code) {
             NumberType.Double -> {
-                return ois.readDouble();
+                return dis.readDouble();
             }
             NumberType.Float -> {
-                return ois.readFloat();
+                return dis.readFloat();
             }
             NumberType.Int -> {
-                return ois.readInt();
+                return dis.readInt();
             }
             NumberType.Long -> {
-                return ois.readLong();
+                return dis.readLong();
             }
             NumberType.Short -> {
-                return ois.readShort();
+                return dis.readShort();
             }
             NumberType.aByte -> {
-                return ois.readByte();
+                return dis.readByte();
             }
         }
     }
 
-    fun writeNumber(oos: ObjectOutputStream, number: Number) {
+    fun writeNumber(dos: DataOutputStream, number: Number) {
         when (number) {
             is Double -> {
-                oos.writeByte(NumberType.Double.type.toInt());
-                oos.writeDouble(number);
+                dos.writeByte(NumberType.Double.type.toInt());
+                dos.writeDouble(number);
             }
             is Float -> {
-                oos.writeByte(NumberType.Float.type.toInt());
-                oos.writeFloat(number);
+                dos.writeByte(NumberType.Float.type.toInt());
+                dos.writeFloat(number);
             }
             is Long -> {
-                oos.writeByte(NumberType.Long.type.toInt());
-                oos.writeLong(number);
+                dos.writeByte(NumberType.Long.type.toInt());
+                dos.writeLong(number);
             }
             is Int -> {
-                oos.writeByte(NumberType.Int.type.toInt());
-                oos.writeInt(number);
+                dos.writeByte(NumberType.Int.type.toInt());
+                dos.writeInt(number);
             }
             is Short -> {
-                oos.writeByte(NumberType.Short.type.toInt());
-                oos.writeShort(number.toInt());
+                dos.writeByte(NumberType.Short.type.toInt());
+                dos.writeShort(number.toInt());
             }
             is Byte -> {
-                oos.writeByte(NumberType.aByte.type.toInt());
-                oos.writeByte(number.toInt());
+                dos.writeByte(NumberType.aByte.type.toInt());
+                dos.writeByte(number.toInt());
             }
         }
     }
 
-    fun readString(ois: ObjectInputStream): String {
-        val length = ois.readInt();
+    fun readString(dis: DataInputStream): String {
+        val length = dis.readInt();
         val nameBuf = ByteArray(length)
-        ois.readFully(nameBuf)
+        dis.readFully(nameBuf)
         return String( nameBuf );
     }
 
-    fun writeString(oos: ObjectOutputStream, data: String) {
+    fun writeString(dos: DataOutputStream, data: String) {
         val bytes: ByteArray = data.toByteArray();
-        oos.writeInt( bytes.size );
-        oos.write( bytes );
+        dos.writeInt( bytes.size );
+        dos.write( bytes );
     }
 }

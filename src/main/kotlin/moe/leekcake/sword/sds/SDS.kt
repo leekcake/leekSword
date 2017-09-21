@@ -29,12 +29,7 @@ class SDS {
     constructor(data: ByteArray) : this( ByteArrayInputStream(data) )
 
     constructor(input: InputStream) {
-        val ois: ObjectInputStream;
-        if(input is ObjectInputStream) {
-            ois = input;
-        } else {
-            ois = ObjectInputStream(input)
-        }
+        val ois = ObjectInputStream(input)
 
         name = SaveHelper.readString(ois);
 
@@ -58,12 +53,7 @@ class SDS {
     }
 
     fun save(output: OutputStream) {
-        val oos: ObjectOutputStream;
-        if(output is ObjectOutputStream) {
-            oos = output;
-        } else {
-            oos = ObjectOutputStream(output);
-        }
+        val oos = ObjectOutputStream(output);
 
         SaveHelper.writeString(oos, name);
 

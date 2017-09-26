@@ -9,7 +9,14 @@ open class Logger(val level: Level = Level.INFO, dateFormat: String = "yyyy-MM-d
         internal val logger = Logger(Level.DEBUG)
     }
 
+    var includeDate = true;
+
     val dateFormat = SimpleDateFormat(dateFormat)
+    val dateString: String
+    get() {
+        if(!includeDate) return "";
+        return dateFormat.format(Date());
+    }
 
     enum class Level(val level: Int) {
         FATAL(0),
@@ -62,9 +69,9 @@ open class Logger(val level: Level = Level.INFO, dateFormat: String = "yyyy-MM-d
         val value: String;
 
         if(tag == "") {
-            value = ( "${dateFormat.format(Date())} [${levelToKorean(level)}] $message" );
+            value = ( "$dateString [${levelToKorean(level)}] $message" );
         } else {
-            value = ( "${dateFormat.format(Date())} [${levelToKorean(level)}] [$tag] $message" );
+            value = ( "$dateString [${levelToKorean(level)}] [$tag] $message" );
         }
 
         if(level < Level.INFO) {

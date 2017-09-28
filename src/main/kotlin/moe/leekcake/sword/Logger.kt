@@ -81,11 +81,11 @@ open class Logger(val level: Level = Level.INFO, dateFormat: String = "yyyy-MM-d
         }
     }
 
-    open protected fun print(value: String) {
+    open fun print(value: String) {
         System.out.println(value)
     }
 
-    open protected fun printError(value: String) {
+    open fun printError(value: String) {
         System.err.println(value)
     }
 }

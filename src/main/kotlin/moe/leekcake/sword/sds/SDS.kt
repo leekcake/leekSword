@@ -93,6 +93,18 @@ class SDS {
         return arguments[name];
     }
 
+    inline fun<reified T> getArgumentArray(name: String): Array<T>? {
+        val argument: Any? = arguments[name];
+
+        if(argument is Array<*>) {
+            return Array(argument.size) {
+                i -> argument[i] as T
+            }
+        }
+
+        return null
+    }
+
     fun getArgumentString(name: String): String? {
         val argument: Any? = arguments[name];
         if(argument === null) {

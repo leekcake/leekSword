@@ -24,7 +24,7 @@ class SDSParser {
      */
     @Throws(IOException::class)
     fun parseReader(reader: Reader): SDS? {
-        var result: SDS? = null;
+        var result: SDS? = null
         synchronized(sb_Script) {
             var read: Int
 
@@ -35,7 +35,7 @@ class SDSParser {
 
             sb_Script.setLength(0) // Reset SB
             while (true) {
-                read = reader.read();
+                read = reader.read()
                 if (read == -1) {
                     break
                 }
@@ -44,7 +44,7 @@ class SDSParser {
                 if (sb_Script.length == 0 && char == '/') {
                     var cc = 0.toChar()
                     while (true) {
-                        read = reader.read();
+                        read = reader.read()
                         if (read == -1) {
                             break
                         }
@@ -76,7 +76,7 @@ class SDSParser {
 
             sb_Script.setLength(0) // Reset SB
             while (true) {
-                read = reader.read();
+                read = reader.read()
                 if (read == -1) {
                     break
                 }
@@ -85,11 +85,7 @@ class SDSParser {
                 if (c == '\\') {
                     c = reader.read().toChar()
                 } else if (c == '"') {
-                    if (inString) {
-                        inString = false
-                    } else {
-                        inString = true
-                    }
+                    inString = !inString
                     continue
                 } else if (!inString) {
                     if (c == ';') {

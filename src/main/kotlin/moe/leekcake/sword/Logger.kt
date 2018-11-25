@@ -9,13 +9,13 @@ open class Logger(val level: Level = Level.INFO, dateFormat: String = "yyyy-MM-d
         internal val logger = Logger(Level.DEBUG)
     }
 
-    var includeDate = true;
+    var includeDate = true
 
     val dateFormat = SimpleDateFormat(dateFormat)
     val dateString: String
     get() {
-        if(!includeDate) return "";
-        return dateFormat.format(Date());
+        if(!includeDate) return ""
+        return dateFormat.format(Date())
     }
 
     enum class Level(val level: Int) {
@@ -38,27 +38,27 @@ open class Logger(val level: Level = Level.INFO, dateFormat: String = "yyyy-MM-d
     }
 
     fun fatal(message: String, tag: String = "") {
-        print(Level.FATAL, message, tag);
+        print(Level.FATAL, message, tag)
     }
 
     fun error(message: String, tag: String = "") {
-        print(Level.ERROR, message, tag);
+        print(Level.ERROR, message, tag)
     }
 
     fun warning(message: String, tag: String = "") {
-        print(Level.WARNING, message, tag);
+        print(Level.WARNING, message, tag)
     }
 
     fun info(message: String, tag: String = "") {
-        print(Level.INFO, message, tag);
+        print(Level.INFO, message, tag)
     }
 
     fun verbose(message: String, tag: String = "") {
-        print(Level.VERBOSE, message, tag);
+        print(Level.VERBOSE, message, tag)
     }
 
     fun debug(message: String, tag: String = "") {
-        print(Level.DEBUG, message, tag);
+        print(Level.DEBUG, message, tag)
     }
 
     fun print(level: Level, message: String, tag: String = "") {
@@ -66,12 +66,12 @@ open class Logger(val level: Level = Level.INFO, dateFormat: String = "yyyy-MM-d
             return
         }
 
-        val value: String;
+        val value: String
 
         if(tag == "") {
-            value = ( "$dateString [${levelToKorean(level)}] $message" );
+            value = ( "$dateString [${levelToKorean(level)}] $message" )
         } else {
-            value = ( "$dateString [${levelToKorean(level)}] [$tag] $message" );
+            value = ( "$dateString [${levelToKorean(level)}] [$tag] $message" )
         }
 
         if(level < Level.INFO) {

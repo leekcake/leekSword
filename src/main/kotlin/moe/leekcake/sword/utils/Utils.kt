@@ -16,7 +16,7 @@ object Utils {
 
     fun copyStream(src: InputStream, dest: OutputStream, count: Int) {
         var left = count
-        var readed: Int;
+        var readed: Int
         val buf = ByteArray(1024)
         while (left != 0) {
             readed = src.read(buf, 0, Math.min(1024, left))

@@ -6,7 +6,7 @@ import java.io.FileNotFoundException
 import java.io.InputStream
 
 class SafeFileInputStream(file: File) : InputStream() {
-    val fis: FileInputStream;
+    val fis: FileInputStream
 
     init {
         if (file.exists()) {

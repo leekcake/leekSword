@@ -4,10 +4,10 @@ import java.io.InputStream
 
 class SDSReader(val input: InputStream) {
     fun close() {
-        input!!.close()
+        input.close()
     }
 
     fun next(): SDS {
-        return SDS(input);
+        return SDS(input)
     }
 }

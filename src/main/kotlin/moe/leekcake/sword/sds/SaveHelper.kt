@@ -17,7 +17,7 @@ object SaveHelper {
                 try {
                     return AutoType.values().first { it.type == findValue }
                 } catch(nse: NoSuchElementException) {
-                    return null;
+                    return null
                 }
             }
         }
@@ -36,24 +36,24 @@ object SaveHelper {
                 try {
                     return NumberType.values().first { it.type == findValue }
                 } catch(nse: NoSuchElementException) {
-                    return null;
+                    return null
                 }
             }
         }
     }
 
     fun readAuto(dis: DataInputStream): Any? {
-        val type: AutoType? = AutoType.from( dis.readByte() );
+        val type: AutoType? = AutoType.from( dis.readByte() )
         if(type === null) {
             throw Exception("Bad type")
         }
 
         when (type) {
             AutoType.Nothing -> {
-                return null;
+                return null
             }
             AutoType.SDS -> {
-                return SDS(dis);
+                return SDS(dis)
             }
             AutoType.RawByte -> {
                 val len = dis.readInt()
@@ -62,44 +62,44 @@ object SaveHelper {
                 return data
             }
             AutoType.String -> {
-                return readString(dis);
+                return readString(dis)
             }
             AutoType.Number -> {
-                return readNumber(dis);
+                return readNumber(dis)
             }
             AutoType.Array -> {
-                return readArray(dis);
+                return readArray(dis)
             }
         }
     }
 
     fun writeAuto(dos: DataOutputStream, data: Any?) {
         if(data === null) {
-            dos.writeByte( AutoType.Nothing.type.toInt() );
-            return;
+            dos.writeByte( AutoType.Nothing.type.toInt() )
+            return
         }
 
         when (data) {
             is Number -> {
-                dos.writeByte( AutoType.Number.type.toInt() );
-                writeNumber(dos, data);
+                dos.writeByte( AutoType.Number.type.toInt() )
+                writeNumber(dos, data)
             }
             is String -> {
-                dos.writeByte( AutoType.String.type.toInt() );
-                writeString(dos, data);
+                dos.writeByte( AutoType.String.type.toInt() )
+                writeString(dos, data)
             }
             is ByteArray -> {
-                dos.writeByte( AutoType.RawByte.type.toInt() );
-                dos.writeInt( data.size );
-                dos.write( data );
+                dos.writeByte( AutoType.RawByte.type.toInt() )
+                dos.writeInt( data.size )
+                dos.write( data )
             }
             is Array<*> -> {
                 dos.writeByte( AutoType.Array.type.toInt() )
-                writeArray(dos, data as Array<Any?>);
+                writeArray(dos, data as Array<Any?>)
             }
             is SDS -> {
-                dos.writeByte(AutoType.SDS.type.toInt());
-                data.save(dos);
+                dos.writeByte(AutoType.SDS.type.toInt())
+                data.save(dos)
             }
             else -> {
                 throw Exception("Non-saveable data on SDS")
@@ -108,47 +108,47 @@ object SaveHelper {
     }
 
     fun readArray(dis: DataInputStream): Array<Any?> {
-        val result: Array<Any?>;
+        val result: Array<Any?>
 
-        result = Array( dis.readInt(), {null} );
+        result = Array( dis.readInt(), {null} )
         for(inx: Int in 0 until result.size) {
-            result[inx] = readAuto(dis);
+            result[inx] = readAuto(dis)
         }
 
-        return result;
+        return result
     }
 
     fun writeArray(dos: DataOutputStream, data: Array<Any?>) {
-        dos.writeInt( data.size );
+        dos.writeInt( data.size )
         for(dat: Any? in data) {
-            writeAuto(dos, dat);
+            writeAuto(dos, dat)
         }
     }
 
     fun readNumber(dis: DataInputStream): Number {
-        val code: NumberType? = NumberType.from( dis.readByte() );
+        val code: NumberType? = NumberType.from( dis.readByte() )
         if(code === null) {
-            throw Exception("Non-Numberic Data");
+            throw Exception("Non-Numberic Data")
         }
 
         when(code) {
             NumberType.Double -> {
-                return dis.readDouble();
+                return dis.readDouble()
             }
             NumberType.Float -> {
-                return dis.readFloat();
+                return dis.readFloat()
             }
             NumberType.Int -> {
-                return dis.readInt();
+                return dis.readInt()
             }
             NumberType.Long -> {
-                return dis.readLong();
+                return dis.readLong()
             }
             NumberType.Short -> {
-                return dis.readShort();
+                return dis.readShort()
             }
             NumberType.aByte -> {
-                return dis.readByte();
+                return dis.readByte()
             }
         }
     }
@@ -156,42 +156,42 @@ object SaveHelper {
     fun writeNumber(dos: DataOutputStream, number: Number) {
         when (number) {
             is Double -> {
-                dos.writeByte(NumberType.Double.type.toInt());
-                dos.writeDouble(number);
+                dos.writeByte(NumberType.Double.type.toInt())
+                dos.writeDouble(number)
             }
             is Float -> {
-                dos.writeByte(NumberType.Float.type.toInt());
-                dos.writeFloat(number);
+                dos.writeByte(NumberType.Float.type.toInt())
+                dos.writeFloat(number)
             }
             is Long -> {
-                dos.writeByte(NumberType.Long.type.toInt());
-                dos.writeLong(number);
+                dos.writeByte(NumberType.Long.type.toInt())
+                dos.writeLong(number)
             }
             is Int -> {
-                dos.writeByte(NumberType.Int.type.toInt());
-                dos.writeInt(number);
+                dos.writeByte(NumberType.Int.type.toInt())
+                dos.writeInt(number)
             }
             is Short -> {
-                dos.writeByte(NumberType.Short.type.toInt());
-                dos.writeShort(number.toInt());
+                dos.writeByte(NumberType.Short.type.toInt())
+                dos.writeShort(number.toInt())
             }
             is Byte -> {
-                dos.writeByte(NumberType.aByte.type.toInt());
-                dos.writeByte(number.toInt());
+                dos.writeByte(NumberType.aByte.type.toInt())
+                dos.writeByte(number.toInt())
             }
         }
     }
 
     fun readString(dis: DataInputStream): String {
-        val length = dis.readInt();
+        val length = dis.readInt()
         val nameBuf = ByteArray(length)
         dis.readFully(nameBuf)
-        return String( nameBuf );
+        return String( nameBuf )
     }
 
     fun writeString(dos: DataOutputStream, data: String) {
-        val bytes: ByteArray = data.toByteArray();
-        dos.writeInt( bytes.size );
-        dos.write( bytes );
+        val bytes: ByteArray = data.toByteArray()
+        dos.writeInt( bytes.size )
+        dos.write( bytes )
     }
 }
